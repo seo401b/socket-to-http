@@ -45,8 +45,10 @@ int main(){
                 std::cout << "client disconnect\n";
                 client = TcpSocket(); // close
             } else {
-                std::cerr << "recv err\n";
-                client = TcpSocket();
+                if(errno != EAGAIN && errno != EWOULDBLOCK){
+                    std::cerr << "recv err\n";
+                    client = TcpSocket();
+                }
             }
         }
         //CPU 과부화 방지

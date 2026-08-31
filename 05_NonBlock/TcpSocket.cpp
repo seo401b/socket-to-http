@@ -8,13 +8,7 @@
 #include <iostream>
 
 // 생성자
-TcpSocket::TcpSocket(){
-    sock_fd_ = socket(AF_INET, SOCK_STREAM, 0);
-    // SOCK_REUSEADDR option
-    int opt = 1;
-    setsockopt(sock_fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-}
-
+TcpSocket::TcpSocket() : sock_fd_(-1) {}
 //내부 생성자, 커널이 준 fd를 재포장
 TcpSocket::TcpSocket(int fd) : sock_fd_(fd){}
 
@@ -43,20 +37,27 @@ TcpSocket& TcpSocket::operator=(TcpSocket&& other) noexcept{
 }
 
 //Bind
-bool TcpSocket::Bind(int port){
+bool TcpSocket::Bind(int port) {
+    if (!IsValid()) {
+        sock_fd_ = socket(AF_INET, SOCK_STREAM, 0);
+        if (sock_fd_ < 0) return false;
+
+        int opt = 1;
+        setsockopt(sock_fd_, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    }
+
     sockaddr_in server_addr;
     std::memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(port);
 
-    if(bind(sock_fd_, reinterpret_cast<struct sockaddr*>(&server_addr), sizeof(server_addr)) < 0){
-        std::cerr << port << "port binding failed: " << std::strerror(errno) << '\n';
+    if (bind(sock_fd_, reinterpret_cast<struct sockaddr*>(&server_addr), sizeof(server_addr)) < 0) {
+        std::cerr << port << " port binding failed: " << std::strerror(errno) << '\n';
         return false;
     }
     return true;
 }
-
 //Listen
 bool TcpSocket::Listen(int log){
     if(listen(sock_fd_, log) < 0){
