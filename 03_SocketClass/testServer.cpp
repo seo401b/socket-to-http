@@ -5,7 +5,11 @@
 int main(){
     TcpSocket server;
 
-    if(!server.Bind(8080) || !server.Listen(5)){
+    try {
+        server.Bind(8080);
+        server.Listen(5);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << '\n';
         return 1;
     }
 
