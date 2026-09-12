@@ -1,0 +1,12 @@
+동시 접속자 수,구현 방식,총 처리량(건),평균 지연 시간(ms),최고 지연 시간(ms),비고
+300,Multi-Reactor (Mutex),60477,4.626,958.767,
+300,Multi-Reactor (Lock-Free),64566,3.73375,862.036,
+1000,Multi-Reactor (Mutex),61921,38.4854,2418.88,
+1000,Multi-Reactor (Lock-Free),64094,36.9259,3010.94,
+2000,Multi-Reactor (Mutex),37526,152.467,2908.75,
+2000,Multi-Reactor (Lock-Free),71224,74.5987,3041.29,
+5000,Multi-Reactor (Mutex),59842,258.087,3324.73,
+5000,Multi-Reactor (Lock-Free),67589,219.589,3147.11,
+10000,Multi-Reactor (Mutex),68449,481.879,3591.72,
+10000,Multi-Reactor (Lock-Free),72764,406.273,3114.19,
+50000,Multi-Reactor (공통),-,-,-,클라이언트 크래시 (std::system_error)
